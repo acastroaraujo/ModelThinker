@@ -45,23 +45,48 @@ These models share three characteristics:
 
 **The seven uses of models** (REDCAPE)
 
-[R] **Reason**.
+[R] **Reason**. *To identify conditions and deduce logical implications.*
 
-[E] **Explain**
+While it's true that the conclusions we derive depend on our assumptions, this doesn't mean *all* models deliver tautologies. The logical implications of models are sometimes unexpected (e.g. *Arrow's impossibility theorem*). Other times will solve paradoxes (e.g. *Simpson's paradox*). And sometimes they will simply uncover mathematical relationships (e.g. prices and marginal costs).
+    
+Above all, *logic reveals the conditionality of truths*. They identify the conditions under which certain claims hold or don't. 
 
-[D] **Design**
+> Critics of formalism claim that models repackage what we already know, that they pour old wine into shiny mathematical bottles, that we do not need a model to know that two heads are better than one or that he who hesitates is lost. We can learn the value of commitment from reading of Odysseus tying himself to the mast. That criticism fails to recognie that inferences drawn from models take conditional forms: if $A$ holds, then $B$ follows. Lessons drawn from literature or proverbial advice from great thinkers often provide no conditions. If we try to lead our lives or manage others by unconditional truths, we find ourselves lost in a sea of *opposite proverbs* [18].
 
-[C] **Communicate**
+How can we choose between the following list without knowing which conditions make them true?
 
-[A] **Act**
+| Proverb                              	| Opposite                           	|
+|--------------------------------------	|------------------------------------	|
+| Two heads are better than one        	| Too many cooks spoil the broth     	|
+| He who hesitates is lost             	| A stitch in time saves nine        	|
+| Tie yourself to the mast             	| Keep your options open             	|
+| The perfect is the enemy of the good 	| Do it well or not at all           	|
+| Actions speak louder than words      	| The pen is mightier than the sword 	|
 
-[P] **Predict**
+[E] **Explain**. *To provide (testable) explanations for empirical phenomena.*
 
-[E] **Explore**
+Note that models can also explain *shape*: e.g. network models of influence and contagion often produce S-shape curves.
+    
+> As for the claim that models can explain anything: it is true, they can. However, a model-based explanation includes formal assumptions and explicit causal chains. Those assumptions and causal chains can be taken to data. A model that claims that high levels of criminal behavior can be explained by low probabilities of being caught can be tested [19].
+
+[D] **Design**. *To choose features of institutions, policies, and rules.*
+
+[C] **Communicate**. *To relate knowledge and understandings* (wtf)
+
+Scott uses *knowledge* as a synonym for the understanding of correlative, causal, and logical relationships.
+
+
+[A] **Act**. *To guide policy choices and strategic actions.*
+
+[P] **Predict**. *To make numerical and categorical predictions of future and unknown phenomena*.
+
+[E] **Explore**. *To investigate possibilities and hypotheticals*.
 
 
 
 ## Additional notes
+
+- Scott's discussion about how models reveal "the conditionality of truth" is highly reminescent on Elster's discussion of proverbs and  [*mechanisms*](https://www.amazon.com/dp/1107416418/).
 
 - Scott focuses on an ensemble of models that tackle a problem from different perspectives. At times he refers to *a lattice of models*.
 
