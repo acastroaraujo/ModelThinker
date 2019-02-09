@@ -63,10 +63,10 @@ These models share three characteristics:
 
 ## Additional notes
 
-Scott focuses on an ensemble of models that tackle a problem from different perspectives. At times he refers to *a lattice of models*.
+- Scott focuses on an ensemble of models that tackle a problem from different perspectives. At times he refers to *a lattice of models*.
 
-On the other hand, BDA3 emphasizes model checking and expansion, thus generating *a sequence of models* that tries to improve upon the previous one. 
+- On the other hand, BDA3 emphasizes model checking and expansion, thus generating *a sequence of models* that tries to improve upon the previous one. 
 
-However, Scott's ensemble view *might* be considered from a Bayesian perspective. I don't know enough about this yet. 
+- Scott's ensemble view *might* be considered from a Bayesian perspective. I don't know enough about this yet. 
 
-See: [Using Stacking to Average Bayesian Predictive Distributions](http://www.stat.columbia.edu/~gelman/research/published/stacking_paper_discussion_rejoinder.pdf).
+    However, see: [Using Stacking to Average Bayesian Predictive Distributions](http://www.stat.columbia.edu/~gelman/research/published/stacking_paper_discussion_rejoinder.pdf).
