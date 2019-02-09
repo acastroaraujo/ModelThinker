@@ -1,0 +1,65 @@
+Introduction
+================
+
+Taken from: Scott E. Page. (2018). *The Model Thinker*. Basic Books, Chapters 1-4
+
+------------------------------------------------------------------------
+
+**The lattice of models**
+
+The models in this book offer a collection that spans multiple disciplines. All these modesl share a common form: they assume a set of entities (e.g. people or organizations) and describe how they interact.
+
+These models share three characteristics:
+
+1.  *They simplify*: stripping away unnecesary details, abstracting from reality, or creating anew from whole cloth.
+
+2.  *They formalize*, they use precise definitions in mathematical form. For example, a model might represent beliefs as probability distributions over states of the world.
+
+3.  *They are wrong*. This is true of all models: they simplify, they omit details (sometimes crucial ones).
+
+------------------------------------------------------------------------
+
+**Three types of models**
+
+1.  *Simplifications of the world* (the embodiment approach). These models include the important parts of a problem, while stripping away (or lumping together) the less salient parts of a problem.
+
+    This approach takes a *realist* view of models.
+
+2.  *Mathematical analogies*. This approach simplifies a problem by making unrealistic assumptions.
+
+    The spherical cow: to estimate the amount of leather in a cowhide, we *assume* a spherical cow. We do this for mathematical convenience: we know how to integrate over tan(*x*) and cos(*x*), but not over cow(*x*).
+
+    We usually judge these models by their predictive accuracy.
+
+3.  *The alternative reality approach*. These models function as analytic and computational playgrounds in which we can explore possibilities. This is what we do with *agent-based models* or with "small-world" models (e.g. Watts & Strogatz 1998). In this scenario, computer simulations become an important tool.
+
+    Unlike the first approach, these two approaches take an *instrumental* view of models.
+
+------------------------------------------------------------------------
+
+**The seven uses of models** (REDCAPE)
+
+\[R\] **Reason**.
+
+\[E\] **Explain**
+
+\[D\] **Design**
+
+\[C\] **Communicate**
+
+\[A\] **Act**
+
+\[P\] **Predict**
+
+\[E\] **Explore**
+
+Additional notes
+----------------
+
+Scott focuses on an ensemble of models that tackle a problem from different perspectives. At times he refers to *a lattice of models*.
+
+On the other hand, BDA3 emphasizes model checking and expansion, thus generating *a sequence of models* that tries to improve upon the previous one.
+
+However, Scott's ensemble view *might* be considered from a Bayesian perspective. I don't know enough about this yet.
+
+See: [Using Stacking to Average Bayesian Predictive Distributions](http://www.stat.columbia.edu/~gelman/research/published/stacking_paper_discussion_rejoinder.pdf).
