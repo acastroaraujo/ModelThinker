@@ -50,7 +50,7 @@ Above all, *logic reveals the conditionality of truths*. They identify the condi
 How can we choose between the following list without knowing which conditions make them true?
 
 | Proverb                              | Opposite                           |
-|--------------------------------------|------------------------------------|
+|:-------------------------------------|:-----------------------------------|
 | Two heads are better than one        | Too many cooks spoil the broth     |
 | He who hesitates is lost             | A stitch in time saves nine        |
 | Tie yourself to the mast             | Keep your options open             |
@@ -65,15 +65,30 @@ Note that models can also explain *shape*: e.g. network models of influence and 
 
 \[D\] **Design**. *To choose features of institutions, policies, and rules.*
 
-\[C\] **Communicate**. *To relate knowledge and understandings* (wtf)
-
-Scott uses *knowledge* as a synonym for the understanding of correlative, causal, and logical relationships.
+\[C\] **Communicate**. Models improve communication by creating a common representation, thus enabling the transferring of ideas between different communities of inquiry.
 
 \[A\] **Act**. *To guide policy choices and strategic actions.*
 
-\[P\] **Predict**. *To make numerical and categorical predictions of future and unknown phenomena*.
+\[P\] **Predict**. *To make numerical and categorical predictions of future and unknown phenomena*. Note that prediction differs from explanation.
 
-\[E\] **Explore**. *To investigate possibilities and hypotheticals*.
+For example, deep-learning algorithms can predict many things with great accuracy, but they offer little in the way of explanation. On the other hand, some models can explain but have little predictive power. This is related to Elster's disscusion of the fact that we don't know which "social mechanism" will be triggered in any given situation.
+
+\[E\] **Explore**. *To investigate possibilities and hypotheticals*, this is referred to in other places as the "alternative reality approach".
+
+The Science of many models
+--------------------------
+
+Here, Page introduces some models to motivate the many-model approach. He introduces a "wisdom of the crowds" type of argument to make his case, but then he introduces **categorization models** to show the limits of this approach.
+
+**Many models as independent lies**
+
+1.  *The Condorcet jury theorem*
+
+This model was constructed to explain the advantages of majority rule. Page creates an analogy between decisions made by many people and conclusions reached by many models.
+
+> Each of an odd number of people classifies an unknown *state of the world* as either true or false. Each person classifies correctly with a probability $p &gt; \\frac{1}{2}$
+
+Even though there's no math in the exposition, we can create a simulation to reach similar conclusions.
 
 Additional notes
 ----------------
