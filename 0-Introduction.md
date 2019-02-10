@@ -94,7 +94,7 @@ Even though there's no mathematical exposition, we can create a short simulation
 majority_rule <- function(N) {
   truth <- "guilty"
   decisions <- vector("character", N)
-  p <- runif(N, min = 0.5)  ## assumption of uniformity
+  p <- runif(N, max = 0.5)  ## assumption of uniformity
   for (i in 1:N) {
     ## i.i.d assumption
     decisions[[i]] <- sample(c("guilty", "inocent"), size = 1, 
@@ -104,8 +104,8 @@ majority_rule <- function(N) {
   return(majority_rule)
 }
 
-S <- 1e4
-N <- 11
+S <- 1e4    ## number of simulations
+N <- 11     ## number of committees
 output <- vector("list", N)
 odd_nums <- seq(1, by = 2, len = N)
 names(output) <- odd_nums
@@ -117,17 +117,17 @@ str(output)
 ```
 
     ## List of 11
-    ##  $ 1 : num [1:10000] 1 1 1 0 0 1 1 0 1 1 ...
-    ##  $ 3 : num [1:10000] 1 0.667 0.667 0.667 1 ...
-    ##  $ 5 : num [1:10000] 0.8 0.6 0.8 0.4 0.8 0.8 0.8 0.6 1 0.8 ...
-    ##  $ 7 : num [1:10000] 0.857 0.571 0.714 0.714 0.286 ...
-    ##  $ 9 : num [1:10000] 0.778 0.667 0.556 0.778 0.778 ...
-    ##  $ 11: num [1:10000] 0.818 0.818 0.818 0.727 0.818 ...
-    ##  $ 13: num [1:10000] 0.692 0.538 0.923 0.769 0.615 ...
-    ##  $ 15: num [1:10000] 0.6 0.8 0.867 0.867 0.733 ...
-    ##  $ 17: num [1:10000] 0.882 0.765 0.706 0.765 0.765 ...
-    ##  $ 19: num [1:10000] 0.789 0.789 0.684 0.895 0.842 ...
-    ##  $ 21: num [1:10000] 0.762 0.81 0.905 0.762 0.762 ...
+    ##  $ 1 : num [1:10000] 1 0 1 0 0 0 0 0 0 1 ...
+    ##  $ 3 : num [1:10000] 0 0.333 0.333 0 0 ...
+    ##  $ 5 : num [1:10000] 0.2 0.2 0.2 0.2 0.4 0 0.2 0.2 0 0.4 ...
+    ##  $ 7 : num [1:10000] 0.286 0.143 0.143 0.286 0.286 ...
+    ##  $ 9 : num [1:10000] 0.222 0.111 0.111 0.111 0.222 ...
+    ##  $ 11: num [1:10000] 0.273 0.182 0.273 0.273 0.182 ...
+    ##  $ 13: num [1:10000] 0.385 0.385 0.385 0.231 0.154 ...
+    ##  $ 15: num [1:10000] 0.333 0.2 0.2 0.267 0.267 ...
+    ##  $ 17: num [1:10000] 0.353 0.294 0.118 0.294 0.176 ...
+    ##  $ 19: num [1:10000] 0.211 0.316 0.158 0.158 0.211 ...
+    ##  $ 21: num [1:10000] 0.4286 0.1429 0.2381 0.0952 0.1905 ...
 
 <img src="0-Introduction_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
 
@@ -151,18 +151,92 @@ where *m*<sub>*i*</sub> is model *i*'s prediction, $\\overline m$ is the average
 
 **Note.** Our ability to construct many diverse models is limited because the "*independent* juror assumption" is rarely met. Similarly, we can't construct many diverse models because the features that go into different models will often be correlated.
 
-Page finishes off this chapter with a somewhat haphazard discussion the variance-bias tradeoff, overfitting, and bootstrap aggregation (or "bagging"). The idea is that combining predictions from multiple models works best when those predictions are uncorrelated.
+Page finishes this chapter off with a somewhat haphazard discussion the variance-bias tradeoff, overfitting, and bootstrap aggregation (or "bagging"). The idea is that combining predictions from multiple models works best when those predictions are uncorrelated.
 
 Modeling human behavior
 -----------------------
 
-Modeling humans is hard
+> People are *diverse*, we are *socially influenced*, we are *error-prone*, we are *purposive*, and we *learn.* In addition, people *possess agency* -we have the capacity to act. \[...\] Each of this six characteristics are potential model features. If we include a feature, we must decide how much of it to include. How diverse do we make our actors? How much social influence do we include? De people learn from others? How do we define objectives? How much agency do people possess?
 
-PÁG. 44
+For example, to tackle diversity we sometimes assume that behavioral diversity cancels out. And this will only happen if the actions people take are *independent* (i.e. models of normal distributions).
 
-### Rational actors
+### Rational-choice models
 
-### Rule-based actors
+An agent is rational if she makes choices towards *fulfilling a goal*, making the most *efficient* use of resources.
+
+> An individual's preferences are represented by a mathematical utility or payoff function defined over a set of possible actions. The individual chooses the action that maximizes the function's value. In a *game*, that choice may require beliefs about the actions of other players.
+
+In assuming a utility function, we give preferences a coherency that may not exist. These preferences must satisfy certain axioms in order to be representable by a utility function: completeness, transitivity, independence, and continuity.
+
+Suppose we have a choice set *X* = {*x*<sub>1</sub>, *x*<sub>2</sub>, …, *x*<sub>*n*</sub>} that contains all available alternatives (e.g. stuff to buy, decisions to make).
+
+-   Completeness: all pairs of alternatives can be compared.
+
+-   Transitivity: a logical order can be established among them: if *x*<sub>1</sub> ≽ *x*<sub>2</sub> and *x*<sub>2</sub> ≽ *x*<sub>3</sub>,then *x*<sub>1</sub> ≽ *x*<sub>3</sub>.
+
+-   Independence of irrelevant alternatives.
+
+-   Continuity: if we have *x*<sub>1</sub> ≽ *x*<sub>2</sub> ≽ *x*<sub>3</sub>, then there exists a probability *p* such that *x*<sub>2</sub> = *p**x*<sub>1</sub> + (1 − *p*)*x*<sub>3</sub>.
+
+People will violate this axioms under any number of circumstances, leading to a widespread skepticism of rational-actor models. Page responds to these criticisms with four arguments.
+
+<table style="width:88%;">
+<caption><strong>Arguments for Rational Choice</strong></caption>
+<colgroup>
+<col width="8%" />
+<col width="79%" />
+</colgroup>
+<tbody>
+<tr class="odd">
+<td><strong>&quot;As if&quot;</strong></td>
+<td>Intelligent rule-based behavior may be indistinguishable from optimal or near-optimal behavior</td>
+</tr>
+<tr class="even">
+<td><strong>Learning</strong></td>
+<td>In situations that are repeated, people should approach optimal behavior</td>
+</tr>
+<tr class="odd">
+<td><strong>Large stakes</strong></td>
+<td>On important decisions, people gather information and think slowly</td>
+</tr>
+<tr class="even">
+<td><strong>Uniqueness</strong></td>
+<td>Optimal behavior is often unique, making the model testable/ tractable</td>
+</tr>
+<tr class="odd">
+<td><strong>Consistency</strong></td>
+<td>Optimal behavior creates a consistent model. If people learn the model, they will not change their behavior</td>
+</tr>
+<tr class="even">
+<td><strong>Benchmark</strong></td>
+<td>Optimal behavior provides a benchmark as an <em>upper bound</em> on people's cognitive abilities</td>
+</tr>
+</tbody>
+</table>
+
+The consistency argument is related to "Lucas' critique", discussed near the end. Basically, any model that doesn't predict optimal behavior will fail to make long-term predictions when people have something to gain by optimizing their behavior.
+
+Also, numerous studies on "heuristics and cognitive bias" (e.g. *loss aversion* and *hyperbolic discounting*) have shown systematic deviations from rational choice.
+
+These considerations aside, Page argues that we should always be open to the possibility that rational-actor models will not solve the problem at hand, and that we should privilege other models instead.
+
+### Rule-based models
+
+Whereas optimization-based models assume an underlying utility or payoff function that people maximize, rule-based models assume specific behaviors. Many people equate optimization-based models with mathematics and rule-based models with computation, but this distinction is not very clean.
+
+**Fixed rules**. A fixed rule applies the same algorithm (or decision making protocol) at all times. This will provide a *lower bound* on people's cognitive abilities. For example, "zero intelligence" is sometimes used as a fixed rule in markets: zero-intelligence traders accept *any* offer that produces a payoff. Remarkably, encoding this rule in a computer model results in nearly efficient outcomes.
+
+**Adaptive rules**. An adaptive rule switches among a set of behaviors, evolves new behaviors, or copies the behaviors of others in order to improve a payoff. Thus, adaptive rules requiere a utility or payoff function. People like Gerd Gigerenzer argue that people tend toward simple and effective rules within any given situtation, and that if that's what people do, then we should model them this way.
+
+Note that rule-based models make no explicit assumption about rationality, but adaptive-rule models exhibit "ecological rationality" (i.e. better rules eventually predominate).
+
+**How smart should we make the actors in our models?**
+
+It depends on what type of outcome is produced by the model. We have four options: *equilibrium*, *cycles*, *randomness*, or *complexity*. If the model produces randomness at an agregate level, then it's safe to say that individuals probably can't learn anything (i.e. they *can't* choose optimally). The models that produce cycles or equilibria, on the other hand, create a *stationary environment* in which we expect people to learn.
+
+Notice that if adaptive rules produce an equilibrium, then the equilibrium should be consistent with behavior by optimizing agents. Otherwise, optimal behavior will be an unrealistic assumption in complex situations.
+
+**The Lucas critique**. If people learn, then we cannot rely on past data to predict outcomes under a policy change. This insight is a variant of *Campbell's law*, which states that people respond to any measure in ways that render it less effective. Thus, models must take into account the fact that people respond to policy and environmental changes.
 
 Additional notes
 ----------------
@@ -176,3 +250,7 @@ Additional notes
 -   Scott's ensemble view *might* be considered from a Bayesian perspective. I don't know enough about this yet.
 
     However, see: [Using Stacking to Average Bayesian Predictive Distributions](http://www.stat.columbia.edu/~gelman/research/published/stacking_paper_discussion_rejoinder.pdf).
+
+-   At points, it seems like rule-based models will help make accurate short-term predictions. And optimization-based models will help make long-term predictions, subject to conditions of equilibrium (or cycles). But I wouldn't put any money on this interpretation.
+
+-   Also, this is the first time I've seen Lucas' critique described as a variant of Campbell's law, which makes sense.
