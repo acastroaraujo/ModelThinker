@@ -78,8 +78,6 @@ For example, deep-learning algorithms can predict many things with great accurac
 The Science of many models
 --------------------------
 
-Here, Page introduces some models to motivate the many-model approach. He introduces a "wisdom of the crowds" type of argument to make his case, but then he introduces **categorization models** to show the limits of this approach.
-
 **Many models as independent lies**
 
 1.  *The Condorcet jury theorem*
@@ -88,7 +86,7 @@ This model was constructed to explain the advantages of majority rule. Page crea
 
 *Each of an odd number of people classifies an unknown *state of the world* as either true or false. Each person classifies correctly with a probability *p* &gt; 0.5. We assume that these probabilities are each drawn independently from each other.*
 
-***Condorcet jury theorem**: A majority vote classifies correctly with hierh probability than any person, and as the number of people becomes large, the accuracy of the majority vote approaches 100%.*
+***Condorcet jury theorem**: A majority vote classifies correctly with higher probability than any person, and as the number of people becomes large, the accuracy of the majority vote approaches 100%.*
 
 Even though there's no mathematical exposition, we can create a short simulation to reach similar conclusions.
 
@@ -96,10 +94,11 @@ Even though there's no mathematical exposition, we can create a short simulation
 majority_rule <- function(N) {
   truth <- "guilty"
   decisions <- vector("character", N)
+  p <- runif(N, min = 0.5)  ## assumption of uniformity
   for (i in 1:N) {
-    p <- runif(1, min = 0.5)  ## assumption of uniformity
+    ## i.i.d assumption
     decisions[[i]] <- sample(c("guilty", "inocent"), size = 1, 
-                             prob = c(p, 1 - p)) ## i.i.d assumption
+                             prob = c(p[i], 1 - p[i]))
   }
   majority_rule <- mean(decisions == truth)
   return(majority_rule)
@@ -118,21 +117,52 @@ str(output)
 ```
 
     ## List of 11
-    ##  $ 1 : num [1:10000] 1 1 1 1 1 1 0 1 1 1 ...
-    ##  $ 3 : num [1:10000] 0.333 1 0.333 1 0.333 ...
-    ##  $ 5 : num [1:10000] 1 0.4 0.6 0.8 0.8 0.6 0.4 1 1 0.8 ...
-    ##  $ 7 : num [1:10000] 0.857 1 0.857 1 0.714 ...
-    ##  $ 9 : num [1:10000] 0.778 0.444 0.556 0.778 0.556 ...
-    ##  $ 11: num [1:10000] 1 0.727 0.818 0.727 0.818 ...
-    ##  $ 13: num [1:10000] 0.615 0.923 0.692 0.769 0.769 ...
-    ##  $ 15: num [1:10000] 0.867 0.667 0.8 0.733 0.867 ...
-    ##  $ 17: num [1:10000] 0.882 0.824 0.882 0.706 0.824 ...
-    ##  $ 19: num [1:10000] 0.632 0.842 0.895 0.842 0.579 ...
-    ##  $ 21: num [1:10000] 0.619 0.571 0.762 0.81 0.667 ...
+    ##  $ 1 : num [1:10000] 1 1 1 0 0 1 1 0 1 1 ...
+    ##  $ 3 : num [1:10000] 1 0.667 0.667 0.667 1 ...
+    ##  $ 5 : num [1:10000] 0.8 0.6 0.8 0.4 0.8 0.8 0.8 0.6 1 0.8 ...
+    ##  $ 7 : num [1:10000] 0.857 0.571 0.714 0.714 0.286 ...
+    ##  $ 9 : num [1:10000] 0.778 0.667 0.556 0.778 0.778 ...
+    ##  $ 11: num [1:10000] 0.818 0.818 0.818 0.727 0.818 ...
+    ##  $ 13: num [1:10000] 0.692 0.538 0.923 0.769 0.615 ...
+    ##  $ 15: num [1:10000] 0.6 0.8 0.867 0.867 0.733 ...
+    ##  $ 17: num [1:10000] 0.882 0.765 0.706 0.765 0.765 ...
+    ##  $ 19: num [1:10000] 0.789 0.789 0.684 0.895 0.842 ...
+    ##  $ 21: num [1:10000] 0.762 0.81 0.905 0.762 0.762 ...
 
 <img src="0-Introduction_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
 
+Here, the percentages represent the simulated error rates for the majority vote. As expected, as *N* becomes larger the accuracy approaches 100%.
+
 Note that creating this simulation forced us to be transparent about the assumptions we make, mainly: *the probabilities that each person reaches a correct conclusion are drawn uniformly and independent from one another*.
+
+1.  *The diversity prediction theorem*
+
+This model relies on opposite types of errors than cancell each other out. It doesn't imply that just *any* collection of models will be accurate; if all models share a common bias, then their average will also contain that bias.
+
+More formaly:
+
+$$
+\\underbrace{(\\overline m - v)^2}\_\\text{many-model error} = 
+\\underbrace{\\sum\_{i=1}^N \\frac{(m\_i - v)^2}{N}}\_\\text{average-model error} - 
+\\underbrace{\\sum\_{i=1}^N \\frac{(m\_i - \\overline m)^2}{N}}\_\\text{diversity of models}
+$$
+
+where *m*<sub>*i*</sub> is model *i*'s prediction, $\\overline m$ is the average of the model's predictions, and *v* equals the true value.
+
+**Note.** Our ability to construct many diverse models is limited because the "*independent* juror assumption" is rarely met. Similarly, we can't construct many diverse models because the features that go into different models will often be correlated.
+
+Page finishes off this chapter with a somewhat haphazard discussion the variance-bias tradeoff, overfitting, and bootstrap aggregation (or "bagging"). The idea is that combining predictions from multiple models works best when those predictions are uncorrelated.
+
+Modeling human behavior
+-----------------------
+
+Modeling humans is hard
+
+PÁG. 44
+
+### Rational actors
+
+### Rule-based actors
 
 Additional notes
 ----------------
