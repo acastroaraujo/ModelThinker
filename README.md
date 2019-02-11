@@ -2,5 +2,9 @@
 
 This repository contains notes and excerpts from Scott Page's book and attempts to translate them to a Bayesian framework. I provide additional references where necessary.
 
-The first 4 chapters are collected in the `0-Introduction.md` file, the rest of chapters will each have their own `.md` file.
+## Contents
+
+- `0-Introduction.md` includes notes from chapters 1-4 and a simulation of the Condorcet jury theorem.
+
+- `1-Distribution` includes notes from chapters 5-6.
 
