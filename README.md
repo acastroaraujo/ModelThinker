@@ -4,7 +4,7 @@ This repository contains notes and excerpts from Scott Page's *The Model Thinker
 
 ## Contents
 
-- [`0-Introduction.md`](https://github.com/acastroaraujo/ModelThinker/blob/master/0-Introduction.md) includes notes from chapters 1-4 and a simulation of the Condorcet jury theorem.
+- [`0-Introduction.md`](https://github.com/acastroaraujo/ModelThinker/blob/master/0-Introduction.md) includes notes from chapters 1-4 and a simulation of the Condorcet jury theorem in R, and then in Stan.
 
-- `1-Distribution` includes notes from chapters 5-6.
+- `1-Distributions` includes notes from chapters 5-6.
 

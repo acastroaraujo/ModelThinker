@@ -117,17 +117,17 @@ str(output)
 ```
 
     ## List of 11
-    ##  $ 1 : num [1:10000] 0 0 1 0 1 1 1 1 1 1 ...
-    ##  $ 3 : num [1:10000] 0.667 0.333 0.667 1 0.667 ...
-    ##  $ 5 : num [1:10000] 0.8 0.6 0.8 1 0.8 0.8 0.6 0.8 0.8 0.4 ...
-    ##  $ 7 : num [1:10000] 0.714 0.429 0.857 0.714 0.857 ...
-    ##  $ 9 : num [1:10000] 0.889 0.889 0.778 0.889 1 ...
-    ##  $ 11: num [1:10000] 0.727 0.818 0.636 0.545 0.636 ...
-    ##  $ 13: num [1:10000] 0.923 0.846 0.846 0.692 0.615 ...
-    ##  $ 15: num [1:10000] 0.667 0.6 0.467 0.8 0.8 ...
-    ##  $ 17: num [1:10000] 0.706 0.647 0.647 0.882 0.706 ...
-    ##  $ 19: num [1:10000] 0.895 0.632 0.632 0.789 0.789 ...
-    ##  $ 21: num [1:10000] 0.714 0.667 0.762 0.762 0.905 ...
+    ##  $ 1 : num [1:10000] 1 0 1 1 0 1 1 1 0 1 ...
+    ##  $ 3 : num [1:10000] 0.667 1 1 0.333 0.667 ...
+    ##  $ 5 : num [1:10000] 0.8 1 0.4 0.6 0.6 0.8 0.6 0.8 0.6 0.6 ...
+    ##  $ 7 : num [1:10000] 0.857 1 0.714 0.571 1 ...
+    ##  $ 9 : num [1:10000] 0.667 0.778 0.444 0.778 0.667 ...
+    ##  $ 11: num [1:10000] 0.727 0.636 0.818 0.727 0.545 ...
+    ##  $ 13: num [1:10000] 0.769 0.769 0.692 0.769 0.692 ...
+    ##  $ 15: num [1:10000] 0.533 0.867 0.733 0.467 0.8 ...
+    ##  $ 17: num [1:10000] 0.647 0.706 0.824 0.765 0.706 ...
+    ##  $ 19: num [1:10000] 0.684 0.684 0.737 0.789 0.737 ...
+    ##  $ 21: num [1:10000] 0.81 0.857 0.952 0.857 0.667 ...
 
 <img src="0-Introduction_files/figure-markdown_github/condorcet01-1.png" style="display: block; margin: auto;" />
 
@@ -282,11 +282,7 @@ readLines("programs/condorcet.stan") %>%
 
 ``` r
 condorcet_jury <- stan_model("programs/condorcet.stan")
-```
 
-    ## recompiling to avoid crashing R session
-
-``` r
 simulation <- function(odd_nums, params, plot = FALSE) {
   stopifnot(length(params) == 2)
   
@@ -332,15 +328,15 @@ S <- simulation(odd_nums = seq(1, 31, 2), params = c(10, 5), plot = TRUE)
     ## Chain 1: Iteration: 1 / 1 [100%]  (Sampling)
     ## Chain 1: 
     ## Chain 1:  Elapsed Time: 0 seconds (Warm-up)
-    ## Chain 1:                0.032304 seconds (Sampling)
-    ## Chain 1:                0.032304 seconds (Total)
+    ## Chain 1:                0.037269 seconds (Sampling)
+    ## Chain 1:                0.037269 seconds (Total)
     ## Chain 1:
 
 This is how the prior looks like:
 
 ``` r
 plot_settings()
-curve(dbeta(x, 10, 1))
+curve(dbeta(x, 10, 5), xlab = "p", ylab = "density", main = "dbeta(10, 5)")
 ```
 
 <img src="0-Introduction_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
@@ -370,7 +366,9 @@ S$plot + annotate("text", x = 0.25, y = 1:ncol(S$result),
 
 By assuming a uniform distribution between 0.5 and 1, we assumed that all people where biased towards the truth. In real life, we might have some cases in which people are biased towards being wrong (e.g. *discrimination*). In another context, we might call this unflinching error rate "*irreducible error*".
 
-The original prior established the probabity of some bias against "truth" to be zero. But our new prior tells another story.
+The original prior established the probabity of some bias against "truth" to be zero.
+
+But our new prior tells a different story. It allows for a 9% chance that any given juror will be biased against "truth"!
 
 ``` r
 round(pbeta(0.5, 10, 5), 2)
@@ -378,9 +376,7 @@ round(pbeta(0.5, 10, 5), 2)
 
     ## [1] 0.09
 
-It allows for a 9% chance that any given juror will be biased against "truth"!
-
-Let's see the effects of this smallish bias with arbitrary numbers of jurors.
+Let's see the effects of this smallish bias with arbitrary numbers of jurors and different priors.
 
 <img src="0-Introduction_files/figure-markdown_github/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
