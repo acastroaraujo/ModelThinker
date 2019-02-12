@@ -1,9 +1,8 @@
 ---
 title: "Eight Schools"
-author: "Andrés Castro Araújo"
-date: "`r format(Sys.time(), '%B %d, %Y')`"
 output: 
   html_document:
+    code_folding: show
     theme: lumen
     toc: yes
     toc_float: 
@@ -11,7 +10,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, comment = "")
 
 ## Packages
 library(tidyverse)
@@ -32,6 +31,18 @@ plot_settings <- function() {
 options(digits = 3)
 set.seed(9999); color_sample <- sample(colors(), size = 8)
 ```
+
+**Last updated**: `r format(Sys.time(), '%B %d, %Y')`
+
+This example is mostly taken from the "[bible](http://www.stat.columbia.edu/~gelman/book/)". It's divided into three sections:
+
+1. A brief description of the 8 schools example, with an introduction to non-centered parameterization.
+
+2. A textbook exercise.
+
+3. A brief introduction to *posterior predictive checking* (PPC), taken from chapter 6 of BDA3 and using the [**`bayesplot`**](https://mc-stan.org/bayesplot/articles/graphical-ppcs.html) package developed by [Jonah Gabry](https://jgabry.github.io/).
+
+****
 
 ## Introduction
 

@@ -1,28 +1,38 @@
 ---
-title: "Introduction"
-output: github_document
-editor_options: 
-  chunk_output_type: inline
+output: 
+  html_document:
+    code_folding: show
+    theme: paper
+    toc: yes
+    toc_float:
+      collapsed: no
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.align = "center")
+knitr::opts_chunk$set(echo = TRUE, fig.align = "center", comment = "")
+
+## Packages
 library(tidyverse)
 library(rstan)
 options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
 
+## Utilities
 plot_settings <- function() {
   par(mar = c(3, 3, 3, 1), mgp = c(2, 0.5, 0), tck = -0.02, 
     family = "Avenir", cex = 0.8, pch = 20)
 }
 ```
 
+****
+
+**Last updated**: `r format(Sys.time(), '%B %d, %Y')`
+
 Taken from: Scott E. Page. (2018). *The Model Thinker*. Basic Books, Chapters 1-4
 
 ****
 
-**The lattice of models**
+## Introduction
 
 The models in this book offer a collection that spans multiple disciplines. All these modesl share a common form: they assume a set of entities (e.g. people or organizations) and describe how they interact.
 
@@ -92,7 +102,7 @@ For example, deep-learning algorithms can predict many things with great accurac
 
 [E] **Explore**. *To investigate possibilities and hypotheticals*, this is referred to in other places as the "alternative reality approach".
 
-## The Science of many models
+## Models of models
 
 **Many models as independent lies**
 

@@ -11,5 +11,7 @@ This repository contains notes and excerpts from Scott Page's *The Model Thinker
 
 ## Related material
 
-- The famous eight schools [example](https://acastroaraujo.github.io/ModelThinker/other/eight_schools.html)
+The `other/` directory contains related materials to Bayesian statistics:
+
+1. [Eight Schools](https://acastroaraujo.github.io/ModelThinker/other/eight_schools.html)
 
