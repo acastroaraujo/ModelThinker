@@ -30,13 +30,14 @@ make_table <- function(df, digits = 3) {
 }
 ```
 
-**Last updated**: `r format(Sys.time(), '%B %d, %Y')`
 
-Taken from: Scott E. Page. (2018). *The Model Thinker*. Basic Books, Chapters 1-4
+## Introduction
 
 ****
 
-## Introduction
+**Last updated**: `r format(Sys.time(), '%B %d, %Y')`
+
+Taken from: Scott E. Page. (2018). *The Model Thinker*. Basic Books, Chapters 1-4
 
 ****
 
@@ -229,15 +230,22 @@ Suppose we have a choice set $X = \{x_1, x_2, \dots, x_n\}$ that contains all av
 
 People will violate this axioms under any number of circumstances, leading to a widespread skepticism of rational-actor models. Page responds to these criticisms with four arguments.
 
-|  |  |
-|-----|--------------------------------------------------------|
-| **"As if"** | Intelligent rule-based behavior may be indistinguishable from optimal or near-optimal behavior |
-| **Learning** | In situations that are repeated, people should approach optimal behavior |
-| **Large stakes** | On important decisions, people gather information and think slowly |
-| **Uniqueness** | Optimal behavior is often unique, making the model testable/ tractable |
-| **Consistency** | Optimal behavior creates a consistent model. If people learn the model, they will not change their behavior |
-| **Benchmark** | Optimal behavior provides a benchmark as an *upper bound* on people's cognitive abilities |
-Table: **Arguments for Rational Choice**
+**Arguments for Rational Choice**
+
+```{r, echo=FALSE}
+Argument <- c('**"As if"**', "**Learning**", "**Large stakes**", 
+              "**Uniqueness**", "**Consistency**", "**Benchmark**")
+
+Description <- c("Intelligent rule-based behavior may be indistinguishable from optimal or near-optimal behavior",
+                 "In situations that are repeated, people should approach optimal behavior",
+                 "On important decisions, people gather information and think slowly",
+                 "Optimal behavior is often unique, making the model testable/ tractable",
+                 "Optimal behavior creates a consistent model. If people learn the model, they will not change their behavior",
+                 "Optimal behavior provides a benchmark as an *upper bound* on people's cognitive abilities")
+
+tibble(Argument, Description) %>% 
+  make_table()
+```
 
 The consistency argument is related to "Lucas' critique", discussed near the end. Basically, any model that doesn't predict optimal behavior will fail to make long-term predictions when people have something to gain by optimizing their behavior.
 
@@ -279,7 +287,7 @@ Here, our uniformity assumption can be seen as a *prior* on the probability that
 
 The default prior used for the previous simulation is as follows:
 
-```{r, fig.width=4, fig.height=3, echo=FALSE}
+```{r, fig.width=4, fig.height=3}
 plot_settings()
 curve(dunif(x, min = 0.5, max = 1), from = 0, to = 1,
       ylab = "density", xlab = "p",
@@ -290,7 +298,7 @@ But we can use any sort of prior distribution, conveniently parameterized as a b
 
 For example:
 
-```{r, fig.height=3, fig.width=8, echo=FALSE}
+```{r, fig.height=3, fig.width=8}
 plot_settings(); par(mfrow = c(1, 3))
 curve(dbeta(x, 2, 2), ylab = "density", xlab = "p")
 curve(dbeta(x, 4, 2), ylab = "density", xlab = "p")
