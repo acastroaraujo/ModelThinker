@@ -2,11 +2,11 @@
 title: "Eight Schools"
 output: 
   html_document:
-    code_folding: show
-    theme: lumen
+    code_folding: hide
+    theme: paper
     toc: yes
     toc_float: 
-      collapsed: yes
+      collapsed: no
 ---
 
 ```{r setup, include=FALSE}
@@ -28,13 +28,23 @@ plot_settings <- function() {
     family = "Avenir", cex = 0.8, pch = 20)
 }
 
+make_table <- function(df, digits = 3) {
+  knitr::kable(df, "html", digits = digits) %>% 
+  kableExtra::kable_styling(full_width = FALSE, 
+                            bootstrap_options = "bordered")
+}
+
 options(digits = 3)
 set.seed(9999); color_sample <- sample(colors(), size = 8)
 ```
 
 **Last updated**: `r format(Sys.time(), '%B %d, %Y')`
 
-This example is mostly taken from the "[bible](http://www.stat.columbia.edu/~gelman/book/)". It's divided into three sections:
+****
+
+This example is mostly taken from the [**BDA3**](http://www.stat.columbia.edu/~gelman/book/). 
+
+It's divided into three sections:
 
 1. A brief description of the 8 schools example, with an introduction to non-centered parameterization.
 
@@ -68,7 +78,7 @@ stan_data <- list(y = y, sigma = sigma, J = length(y))
 
 If we fit a separate model for each of the eight experiments (*no pooling*), we can see that these estimates are fairly indistinct from each other.
 
-```{r, fig.width=8, fig.height=3, echo=FALSE}
+```{r, fig.width=8, fig.height=3}
 grid <- seq(-50, 80, length.out = 500)
 plot_settings()                                             ## ignore
 plot(grid, rep(0, 500), type = "n", ylim = c(0, 0.05),      ## all
@@ -106,13 +116,13 @@ readLines("programs/8S_complete_pooling.stan") %>%
 fit_complete_pooling <- stan("programs/8S_complete_pooling.stan", data = stan_data)
 ```
 
-$$
-\textsf{effect} = \frac{\sum_{j=1}^8 \frac{y_j}{\sigma_j^2}}{\sum_{j=1}^8 \frac{1}{\sigma_j^2}} \approx 7.6 \hspace{1cm} \textsf{standard error} = \sum_{j=1}^8 \frac{(y_j - \bar y)^2}{\sigma_j^2} \approx 4.1
-$$
-
 ```{r}
 print(fit_complete_pooling)
 ```
+
+$$
+\textsf{effect} = \frac{\sum_{j=1}^8 \frac{y_j}{\sigma_j^2}}{\sum_{j=1}^8 \frac{1}{\sigma_j^2}} \approx 7.6 \hspace{1cm} \textsf{standard error} = \sum_{j=1}^8 \frac{(y_j - \bar y)^2}{\sigma_j^2} \approx 4.1
+$$
 
 Instead, we would like a compromise that combines information from all eight experiments without assuming all the $\theta_j$s to be equal (*partial pooling*). This is why we need a **hierarchical model**.
 
@@ -147,7 +157,7 @@ fit_cp <- stan("programs/8S_cp.stan", data = stan_data)
 print(fit_cp)
 ```
 
-```{r, fig.width=8, fig.height=3, echo=FALSE}
+```{r, fig.width=8, fig.height=3}
 draws <- extract(fit_cp)
 plot_settings()
 hist(draws$tau, breaks = 40, probability = TRUE, col = "skyblue",
@@ -189,7 +199,7 @@ fit_ncp <- stan("programs/8S_ncp.stan", data = stan_data)
 print(fit_ncp, pars = c("theta", "mu", "tau"))
 ```
 
-```{r, fig.width=8, fig.height=3, echo=FALSE}
+```{r, fig.width=8, fig.height=3}
 draws <- extract(fit_ncp)
 plot_settings()
 hist(draws$tau, breaks = 40, probability = TRUE, col = "skyblue",

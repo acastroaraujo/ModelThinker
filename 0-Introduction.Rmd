@@ -1,7 +1,7 @@
 ---
 output: 
   html_document:
-    code_folding: show
+    code_folding: hide
     theme: paper
     toc: yes
     toc_float:
@@ -22,9 +22,13 @@ plot_settings <- function() {
   par(mar = c(3, 3, 3, 1), mgp = c(2, 0.5, 0), tck = -0.02, 
     family = "Avenir", cex = 0.8, pch = 20)
 }
-```
 
-****
+make_table <- function(df, digits = 3) {
+  knitr::kable(df, "html", digits = digits) %>% 
+  kableExtra::kable_styling(full_width = FALSE, 
+                            bootstrap_options = "bordered")
+}
+```
 
 **Last updated**: `r format(Sys.time(), '%B %d, %Y')`
 
@@ -33,6 +37,8 @@ Taken from: Scott E. Page. (2018). *The Model Thinker*. Basic Books, Chapters 1-
 ****
 
 ## Introduction
+
+****
 
 The models in this book offer a collection that spans multiple disciplines. All these modesl share a common form: they assume a set of entities (e.g. people or organizations) and describe how they interact.
 
@@ -46,7 +52,9 @@ These models share three characteristics:
 
 ****
 
-**Three types of models**
+### Three types of models
+
+****
 
 1. *Simplifications of the world* (the embodiment approach). These models include the important parts of a problem, while stripping away (or lumping together) the less salient parts of a problem.
 
@@ -64,7 +72,11 @@ These models share three characteristics:
 
 ****
 
-**The seven uses of models** (REDCAPE)
+### The seven uses of models
+
+...or `REDCAPE`
+
+****
 
 [R] **Reason**. *To identify conditions and deduce logical implications.*
 
@@ -76,12 +88,12 @@ Above all, *logic reveals the conditionality of truths*. They identify the condi
 
 How can we choose between the following list without knowing which conditions make them true?
 
-```{r, out.width="60%", fig.align="center", echo=FALSE}
+```{r, fig.align="center", echo=FALSE}
 Proverb <- c("Two heads are better than one", "He who hesitates is lost", "Tie yourself to the mast", "The perfect is the enemy of the good", "Actions speak louder than words")
 
 Opposite <- c("Too many cooks spoil the broth", "A stitch in time saves nine", "Keep your options open", "Do it well or not at all", "The pen is mightier than the sword")
 
-knitr::kable(data.frame(Proverb, Opposite))
+make_table(data.frame(Proverb, Opposite))
 ```
 
 [E] **Explain**. *To provide (testable) explanations for empirical phenomena.*
@@ -102,7 +114,11 @@ For example, deep-learning algorithms can predict many things with great accurac
 
 [E] **Explore**. *To investigate possibilities and hypotheticals*, this is referred to in other places as the "alternative reality approach".
 
-## Models of models
+****
+
+## Science of models
+
+****
 
 **Many models as independent lies**
 
@@ -117,10 +133,11 @@ _**Condorcet jury theorem**: A majority vote classifies correctly with higher pr
 Even though there's no mathematical exposition, we can create a short simulation to reach similar conclusions.
 
 ```{r}
+## Condorcet Simulation
 majority_rule <- function(N) {
   truth <- "guilty"
   decisions <- vector("character", N)
-  p <- runif(N, min = 0.5)  ## assumption of uniformity
+  p <- runif(N, min = 0.5)       ## assumption of uniformity
   for (i in 1:N) {
     ## i.i.d assumption
     decisions[[i]] <- sample(c("guilty", "inocent"), size = 1, 
@@ -130,8 +147,8 @@ majority_rule <- function(N) {
   return(majority_rule)
 }
 
-S <- 1e4    ## number of simulations
-N <- 11     ## number of committees
+S <- 1e4                        ## number of simulations
+N <- 11                         ## number of committees
 output <- vector("list", N)
 odd_nums <- seq(1, by = 2, len = N)
 names(output) <- odd_nums
@@ -246,7 +263,13 @@ Notice that if adaptive rules produce an equilibrium, then the equilibrium shoul
 
 **The Lucas critique**. If people learn, then we cannot rely on past data to predict outcomes under a policy change. This insight is a variant of *Campbell's law*, which states that people respond to any measure in ways that render it less effective. Thus, models must take into account the fact that people respond to policy and environmental changes. 
 
-## Revisiting Condorcet's jury theorem
+****
+
+## Priors
+
+****
+
+**Revisiting Condorcet's jury theorem**
 
 The code that simulates Condorcet's jury theorem can be viewed from a Bayesian framework as a **prior predictive distribution**.
 
@@ -441,7 +464,11 @@ This leads to a further research question: *How are we suppose to represent "com
 
 Note that we only assessed the "uniformity assumption", we didn't cover the independence assumption!
 
+***
+
 ## Additional notes
+
+****
 
 - Scott's discussion about how models reveal "the conditionality of truth" is highly reminescent on Elster's discussion of proverbs and  [*mechanisms*](https://www.amazon.com/dp/1107416418/).
 
