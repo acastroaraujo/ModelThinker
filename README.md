@@ -1,3 +1,4 @@
+# Social Science Models
 
 This repository contains notes and excerpts from Scott Page's *The Model Thinker* (2018) and my attempts implement them in Stan. I provide additional references where necessary.
 

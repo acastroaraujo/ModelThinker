@@ -2,7 +2,7 @@
 title: "Eight Schools"
 output: 
   html_document:
-    code_folding: hide
+    code_folding: show
     theme: paper
     toc: yes
     toc_float: 
