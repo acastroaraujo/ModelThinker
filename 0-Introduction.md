@@ -117,17 +117,17 @@ str(output)
 ```
 
     ## List of 11
-    ##  $ 1 : num [1:10000] 1 1 1 1 0 1 1 1 1 1 ...
-    ##  $ 3 : num [1:10000] 0.667 0.667 1 0.333 1 ...
-    ##  $ 5 : num [1:10000] 1 1 1 0.8 0.8 0.6 1 0.4 1 0.8 ...
-    ##  $ 7 : num [1:10000] 0.857 0.714 0.429 1 0.714 ...
-    ##  $ 9 : num [1:10000] 0.333 0.778 1 0.667 0.889 ...
-    ##  $ 11: num [1:10000] 0.455 0.636 0.818 0.727 0.636 ...
-    ##  $ 13: num [1:10000] 0.923 0.462 0.615 0.462 0.615 ...
-    ##  $ 15: num [1:10000] 0.533 0.8 0.8 0.733 0.6 ...
-    ##  $ 17: num [1:10000] 0.588 0.765 0.647 0.765 0.706 ...
-    ##  $ 19: num [1:10000] 0.789 0.632 0.684 0.789 0.842 ...
-    ##  $ 21: num [1:10000] 0.81 0.81 1 0.667 0.524 ...
+    ##  $ 1 : num [1:10000] 0 0 1 0 1 1 1 1 1 1 ...
+    ##  $ 3 : num [1:10000] 0.667 0.333 0.667 1 0.667 ...
+    ##  $ 5 : num [1:10000] 0.8 0.6 0.8 1 0.8 0.8 0.6 0.8 0.8 0.4 ...
+    ##  $ 7 : num [1:10000] 0.714 0.429 0.857 0.714 0.857 ...
+    ##  $ 9 : num [1:10000] 0.889 0.889 0.778 0.889 1 ...
+    ##  $ 11: num [1:10000] 0.727 0.818 0.636 0.545 0.636 ...
+    ##  $ 13: num [1:10000] 0.923 0.846 0.846 0.692 0.615 ...
+    ##  $ 15: num [1:10000] 0.667 0.6 0.467 0.8 0.8 ...
+    ##  $ 17: num [1:10000] 0.706 0.647 0.647 0.882 0.706 ...
+    ##  $ 19: num [1:10000] 0.895 0.632 0.632 0.789 0.789 ...
+    ##  $ 21: num [1:10000] 0.714 0.667 0.762 0.762 0.905 ...
 
 <img src="0-Introduction_files/figure-markdown_github/condorcet01-1.png" style="display: block; margin: auto;" />
 
@@ -176,7 +176,7 @@ Suppose we have a choice set *X* = {*x*<sub>1</sub>, *x*<sub>2</sub>, �
 
 -   Independence of irrelevant alternatives.
 
--   Continuity: if we have *x*<sub>1</sub> ≽ *x*<sub>2</sub> ≽ *x*<sub>3</sub>, then there exists a probability *p* such that *x*<sub>2</sub> = *p**x*<sub>1</sub> + (1 − *p*)*x*<sub>3</sub>.
+-   Continuity: if we have *x*<sub>1</sub> ≽ *x*<sub>2</sub> ≽ *x*<sub>3</sub>, then there exists a probability *p* such that *x*<sub>2</sub> = *p* *x*<sub>1</sub> + (1 − *p*)*x*<sub>3</sub>.
 
 People will violate this axioms under any number of circumstances, leading to a widespread skepticism of rational-actor models. Page responds to these criticisms with four arguments.
 
@@ -238,6 +238,161 @@ Notice that if adaptive rules produce an equilibrium, then the equilibrium shoul
 
 **The Lucas critique**. If people learn, then we cannot rely on past data to predict outcomes under a policy change. This insight is a variant of *Campbell's law*, which states that people respond to any measure in ways that render it less effective. Thus, models must take into account the fact that people respond to policy and environmental changes.
 
+Revisiting Condorcet's jury theorem
+-----------------------------------
+
+The code that simulates Condorcet's jury theorem can be viewed from a Bayesian framework as a **prior predictive distribution**.
+
+Here, our uniformity assumption can be seen as a *prior* on the probability that each individual juror will arrive at the correct verdict.
+
+> A prior predictive simulation means simulating predictions from a model, using only the prior distribution instead of the posterior distribution. This is very useful for understanding the implications of a prior (McElreath, forthcoming).
+
+The default prior used for the previous simulation is as follows:
+
+<img src="0-Introduction_files/figure-markdown_github/unnamed-chunk-3-1.png" style="display: block; margin: auto;" />
+
+But we can use any sort of prior distribution, conveniently parameterized as a beta distribution.
+
+For example:
+
+<img src="0-Introduction_files/figure-markdown_github/unnamed-chunk-4-1.png" style="display: block; margin: auto;" />
+
+Lets create a stan program that makes the previous simulation to see how this works out.
+
+``` r
+readLines("programs/condorcet.stan") %>% 
+  writeLines()
+```
+
+    data {
+      int N;
+      int odd_vector[N];
+      real beta_params[2];
+    }
+    generated quantities {
+      matrix[4000, N] S;   // 4,000 simulations for each jury size
+      for (i in 1:4000) {
+        for (j in 1:N) {
+          real p;
+          p = beta_rng(beta_params[1], beta_params[2]);
+          S[i, j] = binomial_rng(odd_vector[j], p);
+        }
+      }
+    }
+
+``` r
+condorcet_jury <- stan_model("programs/condorcet.stan")
+```
+
+    ## recompiling to avoid crashing R session
+
+``` r
+simulation <- function(odd_nums, params, plot = FALSE) {
+  stopifnot(length(params) == 2)
+  
+  ### Stan simulation
+  stan_data <- list(N = length(odd_nums),
+                    odd_vector = odd_nums,
+                    beta_params = params)
+  simulation <- sampling(condorcet_jury, chains = 1, iter = 1,
+                       algorithm = "Fixed_param",
+                       data = stan_data)
+  output_matrix <- extract(simulation)$S[1, , ]
+  colnames(output_matrix) <- odd_nums
+  for (i in 1:length(odd_nums)) { ## Stan doesn't have integer division :(
+    output_matrix[ , i] <- output_matrix[ , i] / odd_nums[i]
+  }
+  
+  ### ggplot2 graph (OPTIONAL)
+  if (plot == FALSE) {
+    return(output_matrix)
+  } else {
+    g <- as_tibble(output_matrix) %>% 
+      gather(key = N, value = output) %>% 
+      mutate(N = factor(N, levels = odd_nums)) %>%
+      ggplot(aes(x = output, y = N)) +
+      ggridges::geom_density_ridges(bandwidth = 0.02, 
+                                    fill = "skyblue", alpha = 0.5) +
+      labs(x = NULL, y = NULL, title = "Majority Vote",
+           subtitle = "Condorcet's jury") +
+      geom_vline(xintercept = 0.5, linetype = "dashed") +
+      scale_x_continuous(breaks = seq(0, 1, 0.1)) +
+      annotate("text", x = c(0.25, 0.75), y = length(odd_nums) + 1, 
+               label = c("Wrong", "Correct"), vjust = 1, size = 4) + 
+      theme_minimal(base_line_size = 0, base_family = "Avenir")
+  }
+    return(list(result = output_matrix, plot = g))
+}
+
+S <- simulation(odd_nums = seq(1, 31, 2), params = c(10, 5), plot = TRUE)
+```
+
+    ## 
+    ## SAMPLING FOR MODEL 'condorcet' NOW (CHAIN 1).
+    ## Chain 1: Iteration: 1 / 1 [100%]  (Sampling)
+    ## Chain 1: 
+    ## Chain 1:  Elapsed Time: 0 seconds (Warm-up)
+    ## Chain 1:                0.032304 seconds (Sampling)
+    ## Chain 1:                0.032304 seconds (Total)
+    ## Chain 1:
+
+This is how the prior looks like:
+
+``` r
+plot_settings()
+curve(dbeta(x, 10, 1))
+```
+
+<img src="0-Introduction_files/figure-markdown_github/unnamed-chunk-7-1.png" style="display: block; margin: auto;" />
+
+And this is the prior predictive simulation:
+
+``` r
+S$plot
+```
+
+<img src="0-Introduction_files/figure-markdown_github/unnamed-chunk-8-1.png" style="display: block; margin: auto;" />
+
+Now, with the error rates:
+
+``` r
+error_rates <- apply(S$result, MARGIN = 2, function(x) x < 0.5) %>% 
+  colMeans() * 100
+
+S$plot + annotate("text", x = 0.25, y = 1:ncol(S$result), 
+                  label = paste0(round(error_rates, 1), "%"),
+                  vjust = -0.6, size = 2.5)
+```
+
+<img src="0-Introduction_files/figure-markdown_github/unnamed-chunk-9-1.png" style="display: block; margin: auto;" />
+
+**Why is there a greater error?**
+
+By assuming a uniform distribution between 0.5 and 1, we assumed that all people where biased towards the truth. In real life, we might have some cases in which people are biased towards being wrong (e.g. *discrimination*). In another context, we might call this unflinching error rate "*irreducible error*".
+
+The original prior established the probabity of some bias against "truth" to be zero. But our new prior tells another story.
+
+``` r
+round(pbeta(0.5, 10, 5), 2)
+```
+
+    ## [1] 0.09
+
+It allows for a 9% chance that any given juror will be biased against "truth"!
+
+Let's see the effects of this smallish bias with arbitrary numbers of jurors.
+
+<img src="0-Introduction_files/figure-markdown_github/unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
+
+What's happening here? Bigger jury sizes make error rates converge to a population's prior bias towards reaching "wrong" conclusions.
+
+    ## A beta(10, 4) prior converges to: 4.6% by increasing jury size
+    ## A beta(10, 3) prior converges to: 1.9% by increasing jury size
+    ## A beta(10, 2) prior converges to: 0.6% by increasing jury size
+    ## A beta(10, 1) prior converges to: 0.1% by increasing jury size
+
+This leads to a further research question: *How are we suppose to represent "common bias" in terms of probability distributions?*
+
 Additional notes
 ----------------
 
@@ -254,8 +409,3 @@ Additional notes
 -   At points, it seems like rule-based models will help make accurate short-term predictions. And optimization-based models will help make long-term predictions, subject to conditions of equilibrium (or cycles). But I wouldn't put any money on this interpretation.
 
 -   Also, this is the first time I've seen Lucas' critique described as a variant of Campbell's law, which makes sense.
-
-Stan
-----
-
-DO THE CONDORCET MAJORITY SIMULATION IN STAN, it should be *a lot faster*!
