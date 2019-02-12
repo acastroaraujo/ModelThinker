@@ -1,1 +1,1 @@
-[asdfasdf](https://github.com/acastroaraujo/ModelThinker/blob/master/docs/eight_schools.html)
+[asdfasdf](https://raw.githubusercontent.com/acastroaraujo/ModelThinker/master/docs/eight_schools.html)
