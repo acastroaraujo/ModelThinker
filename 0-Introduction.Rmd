@@ -429,6 +429,8 @@ for (i in seq_along(long_term)) {
 
 This leads to a further research question: *How are we suppose to represent "common bias" in terms of probability distributions?*
 
+Note that we only assessed the "uniformity assumption", we didn't cover the independence assumption!
+
 ## Additional notes
 
 - Scott's discussion about how models reveal "the conditionality of truth" is highly reminescent on Elster's discussion of proverbs and  [*mechanisms*](https://www.amazon.com/dp/1107416418/).
