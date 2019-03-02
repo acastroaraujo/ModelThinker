@@ -1,11 +1,13 @@
 
-This repository contains notes and excerpts from Scott Page's *The Model Thinker* (2018), Richard McElreath's *Statistical Rethinking*, and other resources taken from Andrew Gelman's various writings.
+This repository contains notes and excerpts from Scott Page's ___The Model Thinker___ (2018), Richard McElreath's ___Statistical Rethinking___, and other resources taken from Gelman et al's various writings.
 
 The idea is to learn how combine statistical models with simple mathematical models that encode substantive knowledge about the problems at hand.
 
 ****
 
 ## Model Thinker
+
+The `MT/` directory contains notes taken from Scott Page's book.
 
 - [**`0-Introduction.html`**](https://acastroaraujo.github.io/ModelThinker/MT/0-Introduction.html) includes notes from chapters 1-4 and a simulation of the Condorcet jury theorem in R, and then in Stan.
 
@@ -26,7 +28,7 @@ The `BDA/` directory contains related materials to Bayesian statistics, taken fr
 
 - `multilevel_models.Rmd`
 
-- `matrix_factorization.Rmd`
+- `latent_space_models.Rmd`
 
 - `adventures_in_covariance.Rmd`
 

@@ -20,17 +20,18 @@ library(rstan)
 options(mc.cores = parallel::detectCores())
 rstan_options(auto_write = TRUE)
 
-
 ## Extra functions and settings
 plot_settings <- function() {
   par(mar = c(3, 3, 3, 1), mgp = c(2, 0.5, 0), tck = -0.02, 
     family = "Avenir", cex = 0.8, pch = 20)
 }
 
+theme_set(theme_classic(base_family = "Avenir"))
+
 options(digits = 3)
 ```
 
-```{r, echo=FALSE}
+```{r}
 URL <- "http://www.stat.columbia.edu/~gelman/bda.course/data/golf.txt"
 
 golf_data <- read.table(URL, skip = 2, header = TRUE) %>% 
@@ -43,17 +44,17 @@ g <- golf_data %>%
   ggplot(aes(x, prop, ymin = lower, ymax = upper)) +
   geom_pointrange(size = 0.2) + 
   labs(y = "Probability of success",
-       x = "Distance from hole (feet)") + 
-  theme_classic(base_family = "Avenir")
+       x = "Distance from hole (feet)")
 ```
 
 See more about this example [here]( http://www.stat.columbia.edu/~gelman/research/published/golf.pdf).
 
 The following graph shows data on the proportion of successful golf putts as a function of distance from the hole. Unsurprisingly, the probability of making the shot declines as a function of distance:
 
-```{r, echo=FALSE}
-print(g)
+```{r}
+g
 ```
+
 
 How can we model the probability of success in golf putting as a function of distance from the hole? The usual statistical practice would indicate that we need to use a logistic regression:
 
@@ -79,24 +80,23 @@ golf_data_list <- with(golf_data, list(
 
 golf_logistic <- stan("programs/golf_logistic.stan", 
      data = golf_data_list)
-
 ```
 
 ```{r}
-golf_logistic
+print(golf_logistic, probs = c(0.025, 0.5, 0.975))
 ```
 
-```{r, fig.width=8, echo=FALSE}
+```{r, fig.width=8, fig.height = 3}
 posterior_logistic <- extract(golf_logistic)
 
-as_data_frame(posterior_logistic) %>% 
-  gather(a, b, key = "parameter", value = "estimate") %>% 
-  ggplot(aes(x = estimate, fill = parameter)) + 
-  geom_density(show.legend = FALSE, alpha = 0.5, color = "white") +
-  facet_wrap(~parameter, dir = "h", scales = "free") +
-  labs(x = NULL, y = "posterior density") +
-  theme_classic(base_family = "Avenir")
+df_logistic <- as_tibble(posterior_logistic) %>% 
+  gather(a, b, key = "parameter", value = "estimate")
 
+df_logistic %>% 
+  ggplot(aes(x = estimate, fill = parameter)) + 
+  geom_density(show.legend = FALSE, alpha = 0.5) +
+  facet_wrap(~parameter, ncol = 2, scales = "free") +
+  labs(x = NULL, y = "posterior density")
 ```
 
 Note that this model doesn't actually fit the data really well. For starters, the probability of success isn't predicted to be 1 when the distance is zero! This point isn't sufficiently emphasized: with enough data, we can obtain very precise estimates from a wrong model.
@@ -147,7 +147,7 @@ $$
 p_i = 2 \Phi \left(\frac{\theta_i}{\sigma}\right) - 1
 $$
 
-where $\Phi$ is the standard Normal cumulative distribution function. Note that the angle $\theta$ is the *only* random variable in this model, and that it makes sense to place it under a normal distribution.
+where $\Phi$ is the Normal cumulative distribution function (centered at zero). Note that the angle $\theta$ is the *only* random variable in this model and that $\sigma$ is the only parameter that we actually need to estimate.
 
 **Note**. This formula is equivalent to the following:
 
@@ -171,16 +171,16 @@ golf_geometry <- stan("programs/golf_geometry.stan",
 ```
 
 ```{r}
-golf_geometry
+print(golf_geometry, probs = c(0.025, 0.5, 0.975))
 ```
 
 ```{r}
 posterior_geometry <- extract(golf_geometry)
 
-golf_link <- function(theta, x) {
+golf_link <- function(sigma, x) {
   r <- 1.68 / 12
   R <- 4.25 / 12 
-  return(2*pnorm((1/theta) * asin((R - r) / x)) - 1)
+  return(2*pnorm((1/sigma) * asin((R - r) / x)) - 1)
 }
 
 g_golf <- g
@@ -189,14 +189,16 @@ for (i in sample(4000, 200)) {
   g_golf <- g_golf +
       stat_function(fun = golf_link, 
                 args = list(
-                  theta = posterior_geometry$theta[i]),
+                  sigma = posterior_geometry$sigma[i]),
                 alpha = 0.01, color = "pink")
 }
+
+posterior_geometry$theta
 
 g_golf + 
   stat_function(fun = golf_link, 
                 args = list(
-                  theta = mean(posterior_geometry$theta)),
+                  sigma = mean(posterior_geometry$sigma)),
                 linetype = "dashed") +
   labs(title = "Custom non-linear model") +
   coord_cartesian(ylim = c(0, 1))
