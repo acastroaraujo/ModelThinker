@@ -327,9 +327,6 @@ simulation <- function(odd_nums, params, plot = FALSE) {
                        data = stan_data)
   output_matrix <- extract(simulation)$S[1, , ]
   colnames(output_matrix) <- odd_nums
-  for (i in 1:length(odd_nums)) { ## Stan doesn't have integer division :(
-    output_matrix[ , i] <- output_matrix[ , i] / odd_nums[i]
-  }
   
   ### ggplot2 graph (OPTIONAL)
   if (plot == FALSE) {
@@ -352,23 +349,17 @@ simulation <- function(odd_nums, params, plot = FALSE) {
     return(list(result = output_matrix, plot = g))
 }
 
-S <- simulation(odd_nums = seq(1, 31, 2), params = c(10, 5), plot = TRUE)
+S <- simulation(odd_nums = seq(1, 31, 2), params = c(5, 3), plot = TRUE)
 ```
 
 This is how the prior looks like:
 
 ```{r, fig.width=4, fig.height=3}
 plot_settings()
-curve(dbeta(x, 10, 5), xlab = "p", ylab = "density", main = "dbeta(10, 5)")
+curve(dbeta(x, 5, 3), xlab = "p", ylab = "density", main = "dbeta(5, 3)")
 ```
 
 And this is the prior predictive simulation:
-
-```{r, fig.height=6, fig.width=4}
-S$plot
-```
-
-Now, with the error rates:
 
 ```{r, fig.width=4, fig.height=6}
 error_rates <- apply(S$result, MARGIN = 2, function(x) x < 0.5) %>% 
@@ -381,40 +372,38 @@ S$plot + annotate("text", x = 0.25, y = 1:ncol(S$result),
 
 **Why is there a greater error?**
 
-By assuming a uniform distribution between 0.5 and 1, we assumed that all people where biased towards the truth. In real life, we might have some cases in which people are biased towards being wrong (e.g. *discrimination*). In another context, we might call this unflinching error rate "*irreducible error*".
+By assuming a uniform distribution between 0.5 and 1, we assumed that all people where biased towards the truth. In real life, we might have some cases in which people are biased towards being wrong (e.g. *discrimination*).
 
-The original prior established the probabity of some bias against "truth" to be zero. 
-
-But our new prior tells a different story. It allows for a 9% chance that any given juror will be biased against "truth"!
+The original prior established the probabity of some bias against "truth" to be zero. But our new prior allows for a 23% that any given juror will have *some* bias against being correct. 
 
 ```{r}
-round(pbeta(0.5, 10, 5), 2)
+round(pbeta(0.5, 5, 3), 2)
 ```
 
 Let's see the effects of this smallish bias with arbitrary numbers of jurors and different priors.
 
 ```{r, include=FALSE}
-S <- simulation(odd_nums = seq(1, 101, 2), params = c(10, 4))
+S <- simulation(odd_nums = seq(1, 101, 2), params = c(5, 4))
 err1 <- apply(S, MARGIN = 2, function(x) x < 0.5) %>% colMeans()
-S <- simulation(odd_nums = seq(1, 101, 2), params = c(10, 3))
+S <- simulation(odd_nums = seq(1, 101, 2), params = c(5, 3))
 err2 <- apply(S, MARGIN = 2, function(x) x < 0.5) %>% colMeans()
-S <- simulation(odd_nums = seq(1, 101, 2), params = c(10, 2))
+S <- simulation(odd_nums = seq(1, 101, 2), params = c(5, 2))
 err3 <- apply(S, MARGIN = 2, function(x) x < 0.5) %>% colMeans()
-S <- simulation(odd_nums = seq(1, 101, 2), params = c(10, 1))
+S <- simulation(odd_nums = seq(1, 101, 2), params = c(5, 1))
 err4 <- apply(S, MARGIN = 2, function(x) x < 0.5) %>% colMeans()
 ```
 
 ```{r, echo=FALSE, fig.width=8, fig.height=3}
 df <- tibble(N = seq(1, 101, 2), 
-             "beta(10, 4)" = err1, "beta(10, 3)" = err2, 
-             "beta(10, 2)" = err3, "beta(10, 1)" = err4)
+             "beta(5, 4)" = err1, "beta(5, 3)" = err2, 
+             "beta(5, 2)" = err3, "beta(5, 1)" = err4)
 
 error_rate_plot <- df %>% 
   gather(2:5, key = prior, value = output) %>% 
   ggplot(aes(x = N, y = output, color = prior)) +
   geom_point(size = 0.5) +
   geom_line() +
-  scale_y_continuous(label = scales::percent, breaks = seq(0, 0.3, 0.05)) +
+  scale_y_continuous(label = scales::percent, breaks = seq(0, 0.5, 0.1)) +
   scale_x_continuous(breaks = seq(0, 100, 20)) +
   scale_color_viridis_d() +
   labs(y = "error rate", x = "jury size", title = "Convergence properties") +
@@ -430,16 +419,16 @@ mycolors <- viridisLite::viridis(4)
 density_plots <- ggplot(df, aes(x)) +
     geom_area(stat = "function", fun = dbeta, 
               fill = mycolors[1], color = mycolors[1], alpha = 0.3,
-                  args = list(shape1 = 10, shape2 = 1)) +
+                  args = list(shape1 = 5, shape2 = 1)) +
     geom_area(stat = "function", fun = dbeta, 
               fill = mycolors[2], alpha = 0.3, color = mycolors[2],
-                  args = list(shape1 = 10, shape2 = 2)) +
+                  args = list(shape1 = 5, shape2 = 2)) +
     geom_area(stat = "function", fun = dbeta, 
               fill = mycolors[3], alpha = 0.3, color = mycolors[3], 
-                  args = list(shape1 = 10, shape2 = 3)) +
+                  args = list(shape1 = 5, shape2 = 3)) +
     geom_area(stat = "function", fun = dbeta, 
               fill = mycolors[4], alpha = 0.3, color = mycolors[4],
-                  args = list(shape1 = 10, shape2 = 4)) +
+                  args = list(shape1 = 5, shape2 = 4)) +
     geom_vline(xintercept = 0.5, linetype = "dashed") +
     labs(x = "p", y = "density", title = "Different priors") +
     theme_minimal(base_family = "Avenir", base_line_size = 0)
@@ -448,29 +437,9 @@ library(patchwork)
 density_plots + error_rate_plot
 ```
 
-What's happening here? Bigger jury sizes make error rates converge to a population's prior bias towards reaching "wrong" conclusions.
+What's happening here? Remarkably, even if we establish this bias against "truth" to be significant, bigger jury sizes will eventually make the error rates converge to zero. And even though we would never observe juries *that* big, the results still hold theoretical interests... especially when we apply the main idea to ensembles of models (which is what Page is doing anyway).
 
-```{r, echo=FALSE}
-long_term <- c(round(pbeta(0.5, 10, 1), 3) * 100,
-               round(pbeta(0.5, 10, 2), 3) * 100,
-               round(pbeta(0.5, 10, 3), 3) * 100,
-               round(pbeta(0.5, 10, 4), 3) * 100) %>% 
-  rev()
-
-prior <- c("beta(10, 1)", 
-           "beta(10, 2)",
-           "beta(10, 3)",
-           "beta(10, 4)") %>% 
-  rev()
-
-for (i in seq_along(long_term)) {
-  cat("A ", prior[i], " prior converges to: ", long_term[i], "% by increasing jury size\n", sep = "")
-}
-```
-
-This leads to a further research question: *How are we suppose to represent "common bias" in terms of probability distributions?*
-
-Note that we only assessed the "uniformity assumption", we didn't cover the independence assumption!
+Finally, note that we only assessed the "uniformity assumption", we didn't cover the independence assumption!
 
 ***
 
