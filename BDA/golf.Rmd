@@ -193,8 +193,6 @@ for (i in sample(4000, 200)) {
                 alpha = 0.01, color = "pink")
 }
 
-posterior_geometry$theta
-
 g_golf + 
   stat_function(fun = golf_link, 
                 args = list(
